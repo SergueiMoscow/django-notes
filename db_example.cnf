@@ -1,0 +1,7 @@
+# db.cnf
+[client]
+database = django_notes
+hots = localhost
+user = user
+password = password
+default-character-set = utf8
