@@ -1,0 +1,121 @@
+{% extends 'notes/main.html' %}
+{% block content %}
+{% load static %}
+<div class="row-g5">
+    <form method="post">
+        {% csrf_token %}
+        <div class="container">
+            <div class="col-12">
+                {{ note_form.title.label }}
+                {{ note_form.title }}
+                <div class="invalid-feedback">
+                    {{ note_form.title.errors }}
+                </div>
+            </div>
+            <div class="col-12">
+                {{ note_form.body.label }}
+                {{ note_form.body }}
+                <div class="invalid-feedback">
+                    {{ note_form.body.errors }}
+                </div>
+            </div>
+            <div class="col-12">
+                {{ note_form.image.label }}
+                {{ note_form.image }}
+                <div class="invalid-feedback">
+                    {{ note_form.image.errors }}
+                </div>
+            </div>
+            <br>
+            <p>Теги:</p>
+            <div class="row g-3" id="div_tags">
+            </div>
+            <div class="input-group">
+                <div class="md-5">
+                    <div class="autocomplete div_tag">
+                        <input type="text" name="new_tag" placeholder="Введите тег" class="form-control tag-autocomplete" id="new_tag">
+                    </div>
+                </div>
+                <div class="col md-5">
+                    <button type="button" id="btn_new_tag" class="btn btn-secondary">Добавить</button>
+                </div>
+            </div>
+            <hr class="my-4">
+            <button class="w-100 btn btn-primary btn-lg" type="submit">Сохранить</button>
+        </div>
+    </form>
+</div>
+<script src="{% static 'js/notes.js' %}"></script>
+<script src="{% static 'js/autocomplete.js' %}"></script>
+<script>
+const url_tag_list='{% url 'tags' %}'
+const tags = [];
+
+const add_autocomplete = (id) => {
+    autocomplete(
+        document.getElementById(id),
+        arr=[],
+        url=url_tag_list,
+        1,
+        document.getElementById(id)
+    );
+};
+
+const refreshTags = () => {
+    div_tags = document.getElementById('div_tags')
+    div_tags.innerHTML = '';
+    counter = 0;
+    tags.forEach( (tag)=> {
+        div_tags.innerHTML += `<div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title"><input type="text" name="tag${counter}" class="form-control" value="${tag}"></h5>
+                </div>`
+        counter ++;
+    });
+};
+
+const addTag = (tag) => {
+    tags.push(tag);
+    refreshTags();
+}
+
+const btnAddTag = document.getElementById('btn_new_tag');
+btnAddTag.addEventListener('click', () => {
+    const new_tag = document.getElementById('new_tag').value;
+    addTag(new_tag);
+    document.getElementById('new_tag').value = '';
+});
+
+
+
+const createNewTag1 = (tag) => {
+    let nextElement = 2;
+    const divContainer = document.createElement("div");
+    divContainer.id = `div_tag${nextElement}`;
+    divContainer.className = "col-md-4";
+    dicAutoComplete = document.createElement("div");
+    dicAutoComplete.className = "autocomplete div-tag";
+    const input = document.createElement("input");
+    input.type = "text";
+    input.name = `tag${nextElement}`;
+    input.id = `tag${nextElement}`;
+    input.class = "form-control tag-autocomplete";
+    input.placeholder = "Введите тег";
+    divAutoComplete.appendChild(input);
+    divContainer.appendChild(dicAutoComplete);
+    divTagsContainer = document.createElement("div-tags");
+    divTagsContainer.appendChild(divContainer);
+    add_autocomplete(`tag${nextElement}`);
+}
+
+const tagListener = (div) => {
+    div.addEventListener("click", () => {
+        createNewTag();
+    });
+
+}
+add_autocomplete("new_tag");
+
+</script>
+{% endblock %}
