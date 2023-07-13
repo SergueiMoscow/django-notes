@@ -1,7 +1,8 @@
 {% block content %}
 <div class="container">
-  {% for note in notes %} {% include 'notes/note_in_list.html' %} {% endfor %}
-  {% endblock %}
+  {% for note in notes %}
+  {% include 'notes/note_in_list.html' %}
+  {% endfor %}
 </div>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
@@ -48,3 +49,4 @@
     }
   });
 </script>
+{% endblock %}

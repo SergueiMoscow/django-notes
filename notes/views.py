@@ -22,7 +22,7 @@ def get_list(request):
             condition
         )
     else:
-        notes = Note.objects.filter(public=True and condition)
+        notes = Note.objects.filter(private=False and condition)
     for note in notes:
         note.tags = Tag.objects.filter(note_id=note.id)
     print(f'notes: {notes}')
@@ -93,6 +93,7 @@ def show(request, note_id):
     Shows note with template notes/show.html
     """
     note = get_object_or_404(Note, pk=note_id)
+    note.tags = Tag.objects.filter(note_id=note.id)
     return render(request, 'notes/show.html', {'note': note})
 
 
@@ -104,3 +105,11 @@ def list_notes(request):
     """
     notes = get_list(request)
     return render(request, 'notes/list.html', {'notes': notes})
+
+
+def edit(request, note_id):
+    pass
+
+
+def delete(request, note_id):
+    pass
