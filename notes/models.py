@@ -1,5 +1,15 @@
 from django.contrib.auth.models import User
 from django.db import models
+from datetime import datetime
+import os
+
+
+def get_attachment_path(instance, filename):
+    user_id = instance.user.id
+    today = datetime.today()
+    year = today.strftime('%Y')
+    month = today.strftime('%m')
+    return os.path.join('attachments', str(user_id), year, month, filename)
 
 
 class TagManager(models.Manager):
@@ -10,7 +20,7 @@ class Note(models.Model):
     objects = models.Manager()
     title = models.CharField(max_length=100)
     body = models.TextField(null=True, default='')
-    image = models.ImageField(upload_to='attachments', null=True, default=None)
+    image = models.ImageField(upload_to=get_attachment_path, null=True, default=None)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
     private = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
