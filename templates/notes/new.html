@@ -27,10 +27,18 @@
                 </div>
             </div>
             <br>
-            <div class="form-check">
+            <div class="col-12">
+                {{ note_form.private }}
+                {{ note_form.private.label }}
+                <div class="invalid-feedback">
+                    {{ note_form.private.errors }}
+                </div>
+            </div>
+            <br>
+            <!-- <div class="form-check">
                 <input type="checkbox" class="form-check-input" id="private" name="private">
                 <label class="form-check-label" for="private">Приватная заметка</label>
-            </div>
+            </div> -->
             <br>
             <p>Теги:</p>
             <div class="note-tags" id="div_tags">
@@ -52,8 +60,8 @@
 </div>
 <script src="{% static 'js/autocomplete.js' %}"></script>
 <script>
-const url_tag_list='{% url 'tags' %}'
-const tags = [];
+const url_tag_list='{% url 'tags_list' %}'
+const tags = {{ js_tags|safe }};
 
 const add_autocomplete = (id) => {
     autocomplete(
@@ -125,6 +133,7 @@ const tagListener = (div) => {
 
 }
 add_autocomplete("new_tag");
+refreshTags();
 
 </script>
 {% endblock %}
