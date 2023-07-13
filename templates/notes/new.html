@@ -27,8 +27,13 @@
                 </div>
             </div>
             <br>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" id="private" name="private">
+                <label class="form-check-label" for="private">Приватная заметка</label>
+            </div>
+            <br>
             <p>Теги:</p>
-            <div class="row g-3" id="div_tags">
+            <div class="note-tags" id="div_tags">
             </div>
             <div class="input-group">
                 <div class="md-5">
@@ -45,7 +50,6 @@
         </div>
     </form>
 </div>
-<script src="{% static 'js/notes.js' %}"></script>
 <script src="{% static 'js/autocomplete.js' %}"></script>
 <script>
 const url_tag_list='{% url 'tags' %}'
@@ -66,11 +70,12 @@ const refreshTags = () => {
     div_tags.innerHTML = '';
     counter = 0;
     tags.forEach( (tag)=> {
-        div_tags.innerHTML += `<div class="col-md-4">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title"><input type="text" name="tag${counter}" class="form-control" value="${tag}"></h5>
-                </div>`
+        div_tags.innerHTML += `<div class="note-tag"><span>${tag}</span>
+            <input type="hidden" name="tag${counter}" value="${tag}">
+            <button type="button" class="btn btn-light btn-sm" onclick="removeTag('${tag}')">
+                <img src={% static 'images/x-mark-16.png' %}
+            </button>
+            </div>`;
         counter ++;
     });
 };
@@ -87,7 +92,11 @@ btnAddTag.addEventListener('click', () => {
     document.getElementById('new_tag').value = '';
 });
 
-
+const removeTag = (tag) => {
+    console.log('Removing tag ' + tag);
+    tags.splice(tags.indexOf(tag), 1);
+    refreshTags();
+}
 
 const createNewTag1 = (tag) => {
     let nextElement = 2;

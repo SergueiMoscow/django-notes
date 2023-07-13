@@ -7,11 +7,12 @@ class TagManager(models.Manager):
 
 
 class Note(models.Model):
+    objects = models.Manager()
     title = models.CharField(max_length=100)
     body = models.TextField(null=True, default='')
     image = models.ImageField(upload_to=f'notes/', null=True, default=None)
     user = models.ForeignKey(User, on_delete=models.DO_NOTHING)
-    public = models.BooleanField(default=False)
+    private = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     deleted_at = models.DateTimeField(null=True)

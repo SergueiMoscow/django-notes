@@ -8,6 +8,56 @@ fetch(`https://opengraph.io/api/1.1/site/${encodeURIComponent(url)}`)
   });
 }
 
+function getOpenGraph(url) {
+  return fetch(url)
+    .then(response => {
+      return response.text();
+    })
+    .then(html => {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, 'text/html');
+      const og = {
+        title: doc.querySelector('meta[property="og:title"]').getAttribute('content'),
+        description: doc.querySelector('meta[property="og:description"]').getAttribute('content'),
+        image: doc.querySelector('meta[property="og:image"]').getAttribute('content')
+      };
+      return og;
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+}
+
+function getUrlsFromText(text) {
+  const urlRegex = /(https?:\/\/[^\s]+)/g;
+  const urls = text.match(urlRegex);
+  return urls;
+}
+
+const addOpenGraph = (div, url) => {
+// TODO:  Добивать это всё в DIV программно!!!
+  const ogData = document.createElement('div');
+  ogData.classList.add('og-data');
+  const ogTitle = document.createElement('div');
+  ogTitle.classList.add('og-title');
+  const ogDescription = document.createElement('div');
+  ogDescription.classList.add('og-description');
+  const ogImage = document.createElement('div');
+  ogImage.classList.add('og-image');
+  ogData.appendChild(ogTitle);
+  ogData.appendChild(ogDescription);
+  ogData.appendChild(ogImage);
+  div.appendChild(ogData);
+  getOpenGraph(url)
+    .then(og => {
+      ogTitle.innerText = og.title;
+      ogDescription.innerText = og.description;
+      ogImage.src = og.image;
+      ogData.style.display = 'block';
+    });
+  }
+
+
 const ajax = (args = {}) => {
   let method = "POST";
   if (args.method) {

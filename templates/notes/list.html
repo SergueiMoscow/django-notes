@@ -1,0 +1,50 @@
+{% block content %}
+<div class="container">
+  {% for note in notes %} {% include 'notes/note_in_list.html' %} {% endfor %}
+  {% endblock %}
+</div>
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    notes = document.querySelectorAll(".note_in_list");
+    for (var i = 0; i < notes.length; i++) {
+      body = notes[i].children[1].innerHTML;
+      urls = getUrlsFromText(body);
+      if (urls) {
+        for (var j = 0; j < urls.length; j++) {
+            notes[i].children[1].innerHTML = notes[i].children[1].innerHTML.replace(
+            urls[j],
+            '<a href="' + urls[j] + '" target="_blank">' + urls[j] + "</a>"
+            );
+            // TODO: проблема с подгрузкой страниц в getOpenGraph.
+            // CROS policy.
+            // addOpenGraph(notes[i], urls[j]);
+        }
+      }
+    }
+    inputSearch = document.getElementById("query-search");
+    if (inputSearch) {
+        inputSearch.addEventListener("keyup", function (event) {
+            // if (inputSearch.value.length > 0) {
+                ajax({
+                    method: 'GET',
+                    url: `/notes/list_notes/?q=${inputSearch.value}`,
+                    success: function (data) {
+                        document.getElementById("content").innerHTML = data;
+                    }
+                });
+            // }
+        });
+        inputSearch.addEventListener("search", function (event) {
+            if (inputSearch.value === '') {
+                ajax({
+                    method: 'GET',
+                    url: `/notes/list_notes/`,
+                    success: function (data) {
+                        document.getElementById("content").innerHTML = data;
+                    }
+                });
+            }
+        });
+    }
+  });
+</script>

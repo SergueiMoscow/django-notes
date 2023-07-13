@@ -1,3 +1,42 @@
 .div_tag {
     max-width: 200px;
 }
+
+.note-tags {
+    display: flex;
+    padding-top: 10px;
+}
+
+.note-tags .note-tag {
+    display: block;
+    background-color: #eee;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    padding: 0.2em 0 0.2em 1em;
+}
+
+.note-tags .note-tag-list {
+    display: block;
+    background-color: #eee;
+    margin-right: 1em;
+    margin-bottom: 1em;
+    padding: 0.2em 1em 0.2em 1em;
+}
+
+.note-url {
+    color: #333;
+    text-decoration: none;
+
+}
+
+.note_in_list {
+    margin: 1em 0.5em;
+    padding: 0.5em;
+    border-radius: 1em;
+    background-color: #f0f0fc;
+}
+
+.note-tag .btn img {
+    height: 16px;
+    margin-top: -3px;
+}
