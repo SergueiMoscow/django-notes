@@ -40,3 +40,12 @@
     height: 16px;
     margin-top: -3px;
 }
+
+#modal-delete {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
+}

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -12,17 +14,21 @@ def get_list(request):
     :param request: q = подстрока запроса
     :return:
     """
-    condition = True
+    condition_not_deleted = Q(deleted=False)
+    condition = condition_not_deleted
     if request.GET.get('q') is not None:
-        condition = (Q(title__icontains=request.GET.get('q')) | Q(body__icontains=request.GET.get('q')))
+        condition = condition_not_deleted & \
+                    (Q(title__icontains=request.GET.get('q')) | Q(body__icontains=request.GET.get('q')))
 
+    print(f'condition: {condition}')
     if request.user.is_authenticated:
         notes = Note.objects.filter(
             user=request.user and
-            condition
+            condition and
+            Q(deleted=False)
         )
     else:
-        notes = Note.objects.filter(private=False and condition)
+        notes = Note.objects.filter(Q(private=False) & condition).all()
     for note in notes:
         note.tags = Tag.objects.filter(note_id=note.id)
     print(f'notes: {notes}')
@@ -112,4 +118,11 @@ def edit(request, note_id):
 
 
 def delete(request, note_id):
-    pass
+    print(f'Request: {request}')
+    print(f'note_id: {note_id}')
+    if request.method == 'POST':
+        note = get_object_or_404(Note, pk=note_id)
+        note.deleted = True
+        note.deleted_at = datetime.now()
+        note.save()
+        return redirect('index')

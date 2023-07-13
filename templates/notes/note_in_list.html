@@ -1,5 +1,5 @@
 <div class="note_in_list">
-    <div class="note-title"><a class="note-url" href="{% url 'show' note_id=note.id %}"><h2>{{ note.title }}</h2></a></div>
+    <div class="note-title"><a class="note-url" href="{% url 'note_show' note_id=note.id %}"><h2>{{ note.title }}</h2></a></div>
     <div class="note-body">{{ note.body }}</div>
     <div class="note-tags">
         {% for tag in note.tags %}

@@ -1,42 +1,91 @@
-{% extends 'notes/main.html' %}
-{% block content %}
+{% extends 'notes/main.html' %} {% block content %}
+<script type="text/javascript">
+    delete_note = () => {
+        modal_delete = document.getElementById('modal-delete');
+        modal_delete.style.display = 'block';
+    };
+</script>
 <div id="content">
-    <div class="container">
-        <div class="col-md-7 col-lg-8">
-            <div class="col-12">
-                <h2>{{ note.title }}</h2>
-            </div>
-            <div class="col-12 note-body">
-                <p>{{ note.body }}</p>
-            </div>
-            <div class="note-tags">
-                {% for tag in note.tags %}
-                <div class="note-tag-list">{{ tag.tag }}</div>
-                {% endfor %}
-            </div>
-            <div class="col-12">
-                <a href="{% url 'edit' note.id %}" class="btn btn-primary">Edit</a>
-                <a href="{% url 'delete' note.id %}" class="btn btn-danger">Delete</a>
-            </div>
-        </div>
+  <div class="container">
+    <div class="col-md-7 col-lg-8">
+      <div class="col-12">
+        <h2>{{ note.title }}</h2>
+      </div>
+      <div class="col-12 note-body">
+        <p>{{ note.body }}</p>
+      </div>
+      <div class="note-tags">
+        {% for tag in note.tags %}
+        <div class="note-tag-list">{{ tag.tag }}</div>
+        {% endfor %}
+      </div>
+      <div class="col-12">
+        <a href="{% url 'note_edit' note.id %}" class="btn btn-primary">Edit</a>
+        <a href="javascript:delete_note()" class="btn btn-danger">Delete</a>
+      </div>
     </div>
+  </div>
+</div>
+<div id="modal-delete">
+    <form method="POST" action="/notes/note/{{note.id}}/delete">
+        {% csrf_token %}
+        <input type="hidden" name="id" value="{{ note.id }}" />
+  <div class="modal-content rounded-3 shadow">
+    <div class="modal-body p-4 text-center">
+      <h5 class="mb-0">Удалить эту заметку?</h5>
+      <p class="mb-0">Вы уверены, что хотите удалить эту заметку?</p>
+    </div>
+    <div class="modal-footer flex-nowrap p-0">
+      <button
+        type="submit"
+        class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0 border-end"
+      >
+        <strong>Удалить</strong>
+      </button>
+      <button
+        type="reset"
+        class="btn btn-lg btn-link fs-6 text-decoration-none col-6 py-3 m-0 rounded-0"
+        data-bs-dismiss="modal"
+      >
+        Нет
+      </button>
+    </div>
+  </div>
+  </form>
 </div>
 <script>
   document.addEventListener("DOMContentLoaded", function () {
+    // note_id = {{ note.id }};
     divBody = document.querySelector(".note-body");
-      body = divBody.innerHTML;
-      urls = getUrlsFromText(body);
-      if (urls) {
-        for (var j = 0; j < urls.length; j++) {
-            divBody.innerHTML = divBody.innerHTML.replace(
-            urls[j],
-            '<a href="' + urls[j] + '" target="_blank">' + urls[j] + "</a>"
-            );
-            // TODO: проблема с подгрузкой страниц в getOpenGraph.
-            // CROS policy.
-            // addOpenGraph(notes[i], urls[j]);
-        }
+    body = divBody.innerHTML;
+    urls = getUrlsFromText(body);
+    if (urls) {
+      for (var j = 0; j < urls.length; j++) {
+        divBody.innerHTML = divBody.innerHTML.replace(
+          urls[j],
+          '<a href="' + urls[j] + '" target="_blank">' + urls[j] + "</a>"
+        );
+        // TODO: проблема с подгрузкой страниц в getOpenGraph.
+        // CROS policy.
+        // addOpenGraph(notes[i], urls[j]);
       }
+    }
+    // document.querySelector("#delete-confirm").addEventListener("click", function () {
+    //   document.querySelector("#modal-delete").style.display = "none";
+    //   ajax({
+    //     method: 'DELETE',
+    //     url: `/notes/note/${note_id}/delete`,
+        
+    //     success: function (data) {
+    //         console.log(data);
+    //         // window.location='/';
+    //     }
+    //   });
+    // });
+    // document.querySelector("#delete-reset").addEventListener("click", function () {
+    //   document.querySelector("#modal-delete").style.display = "none";
+    // });
+
   });
 </script>
 {% endblock %}

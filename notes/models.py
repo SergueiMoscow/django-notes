@@ -22,7 +22,7 @@ class Note(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f'id: {self.id}, title: {self.title}'
+        return f'id: {self.id}, title: {self.title}, D: {self.deleted}'
 
 
 class Content(models.Model):
