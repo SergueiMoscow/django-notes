@@ -1,3 +1,4 @@
+import json
 from datetime import datetime
 
 from django.db.models import Q
@@ -6,6 +7,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from notes.forms import NoteModelForm, TagModelForm
 from notes.models import Tag, Note
 from django.http import JsonResponse
+from django.core import serializers
 
 
 def get_list(request):
@@ -50,27 +52,22 @@ def new(request):
     if request.method == 'POST':
         note_form = NoteModelForm(request.POST, request.FILES)
         if note_form.is_valid():
-            print(f'Post: {request.POST}, Files: {request.FILES}')
             note_obj = note_form.save(commit=False)
             note_obj.user = user
             note_obj.save()
-            print(f'Note saved: {note_obj}')
-            tag = request.POST.get('tag1')
-            print(f'tag: {tag}')
             for i in range(0, 100):
                 if request.POST.get(f'tag{i}') is not None:
                     tag = Tag()
                     tag.tag = request.POST.get(f'tag{i}')
                     tag.note_id = note_obj
-                    print(f'tag: {tag}')
                     tag.save()
                 else:
-                    break;
+                    break
             return redirect('index')
     else:
         note_form = NoteModelForm()
         context = {'note_form': note_form, 'js_tags': '[]'}
-        return render(request, 'notes/new.html', context)
+        return render(request, 'notes/edit.html', context)
 
 
 def tags(request):
@@ -109,28 +106,40 @@ def list_notes(request):
 
 
 def edit(request, note_id):
+    debug = True
     note = get_object_or_404(Note, pk=note_id)
     user = request.user
     if request.method == 'POST':
         note_form = NoteModelForm(request.POST, instance=note)
-        tag_forms = [TagModelForm(request.POST, prefix=str(i), instance=tag) for i, tag in enumerate(note.tags.all())]
+        # tag_forms = [TagModelForm(request.POST, prefix=str(i), instance=tag) for i, tag in enumerate(note.tags.all())]
         if note_form.is_valid():
-            print(f'Post: {request.POST}')
             note_obj = note_form.save(commit=False)
             note_obj.user = user
             note_obj.save()
-            print(f'Note saved: {note_obj}')
-            tag = request.POST.get('tag1')
-            print(f'tag: {tag}')
-            for i in range(0, 100):
-                if request.POST.get(f'tag{i}') is not None:
-                    tag = Tag()
-                    tag.tag = request.POST.get(f'tag{i}')
-                    tag.note_id = note_obj
-                    print(f'tag: {tag}')
-                    tag.save()
-                else:
-                    break;
+            # получаем sets имеющихся и новых тегов
+            new_tags = set([value for key, value in request.POST.items() if key.startswith('tag')])
+            old_tags = set([str(tag) for tag in Tag.objects.filter(note_id=note.id)])
+            # Генерим новые сеты для удаления и добавления
+            tags_to_delete = old_tags - new_tags
+            tags_to_add = new_tags - old_tags
+            if debug:
+                print(f'old_tags: {list(old_tags)}')
+                print(f'new_tags: {list(new_tags)}')
+                print(f'tags_to_delete: {list(tags_to_delete)}')
+                print(f'tags_to_add: {list(tags_to_add)}')
+            Tag.objects.filter(note_id=note.id, tag__in=tags_to_delete).delete()
+            for tag in tags_to_add:
+                note = Note.objects.get(id=note_id)
+                Tag.objects.create(tag=tag, note_id=note)
+            # for i in range(0, 100):
+            #     if request.POST.get(f'tag{i}') is not None:
+            #         tag = Tag()
+            #         tag.tag = request.POST.get(f'tag{i}')
+            #         tag.note_id = note_obj
+            #         print(f'tag: {tag}')
+            #         tag.save()
+            #     else:
+            #         break;
             return redirect('note_show', note_id=note_id)
 
         pass
@@ -141,13 +150,11 @@ def edit(request, note_id):
         js_tags = [f'"{tag}"' for tag in note.tags]
         js_tags = '[' + ', '.join(js_tags) + ']'
         context = {'note_form': note_form, 'js_tags': js_tags}
-        return render(request, 'notes/new.html', context)
+        return render(request, 'notes/edit.html', context)
     return redirect('note_show', note_id=note_id)
 
 
 def delete(request, note_id):
-    print(f'Request: {request}')
-    print(f'note_id: {note_id}')
     if request.method == 'POST':
         note = get_object_or_404(Note, pk=note_id)
         note.deleted = True
