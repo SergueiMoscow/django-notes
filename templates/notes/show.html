@@ -1,4 +1,4 @@
-{% extends 'notes/main.html' %} {% block content %}
+{% extends 'main.html' %} {% block content %}
 <script type="text/javascript">
     delete_note = () => {
         modal_delete = document.getElementById('modal-delete');
@@ -17,15 +17,22 @@
       <div class="col-12 note-body">
         <p>{{ note.image }}</p>
       </div>
+      {% if note.image %}
+      <div class="col-12 note-body">
+        <img src="{{ note.image.url }}" alt="Note image">
+      </div>
+      {% endif %}
       <div class="note-tags">
         {% for tag in note.tags %}
         <div class="note-tag-list">{{ tag.tag }}</div>
         {% endfor %}
       </div>
+      {% if note.user.id == user.id %}
       <div class="col-12">
         <a href="{% url 'note_edit' note.id %}" class="btn btn-primary">Edit</a>
         <a href="javascript:delete_note()" class="btn btn-danger">Delete</a>
       </div>
+      {% endif %}
     </div>
   </div>
 </div>

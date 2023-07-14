@@ -31,13 +31,14 @@
                     <li>
                         <hr class="dropdown-divider">
                     </li>
-                    <li><a class="dropdown-item" href="#">Выйти</a></li>
+                    <li><a class="dropdown-item" href="{% url 'notes_logout' %}">Выйти</a></li>
                 </ul>
             </div>
 
             {% else %}
             <div class="col-md-3 text-end">
-                <button type="button" class="btn btn-outline-primary me-2"><a href="{% url 'account_login' %}">Login</a></button>
+                {# для google логина должна быть ссылка url 'account_login' #}
+                <button type="button" class="btn btn-outline-primary me-2"><a href="{% url 'notes_login' %}">Login</a></button>
                 <button type="button" class="btn btn-primary">Sign-up</button>
             </div>
             {% endif %}

@@ -50,3 +50,12 @@
     display: none;
     background-color: #dd4444;
 }
+
+.note-image {
+    max-width: 100%;
+}
+
+
+.note-image img {
+    max-width: 100%;
+}
