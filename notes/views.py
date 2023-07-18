@@ -88,7 +88,6 @@ def new(request):
 
 
 
-
 def tags(request):
     """
     Generates JSON list of tags
@@ -111,6 +110,8 @@ def show(request, note_id):
     """
     note = get_object_or_404(Note, pk=note_id)
     note.tags = Tag.objects.filter(note_id=note.id)
+    note.body = clean(note.body, tags=['br', 'p', 'hr'])
+    note.body = note.body.replace('\n', '<br />')
     return render(request, 'notes/show.html', {'note': note})
 
 
