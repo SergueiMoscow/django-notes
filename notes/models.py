@@ -61,3 +61,11 @@ class Tag(models.Model):
     def __str__(self):
         return self.tag
 
+
+class UserProfile(models.Model):
+    objects = TagManager()
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    avatar = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+
+    def __str__(self):
+        return str(self.user)

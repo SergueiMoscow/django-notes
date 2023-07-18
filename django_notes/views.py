@@ -1,10 +1,11 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.models import SocialAccount
 import requests
 
-from .forms import LoginForm, SignUpForm
+from .forms import LoginForm, SignUpForm, ProfileForm
 
 
 def login_view(request):
@@ -44,6 +45,18 @@ def register_view(request):
         form = SignUpForm()
         return render(request, 'signup.html', {'form': form})
     return redirect('index')
+
+
+@login_required
+def edit_profile(request):
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+    else:
+        form = ProfileForm(instance=request.user)
+    return render(request, 'edit_profile.html', {'form': form})
 
 
 def google_callback(request):
