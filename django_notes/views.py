@@ -34,8 +34,8 @@ def register_view(request):
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
-            # user = authenticate(username, raw_password)
-            login(request) #, user)
+            user = authenticate(request, username=username, password=raw_password)
+            login(request, user)
             print('test1')
             return redirect('home')
     else:
