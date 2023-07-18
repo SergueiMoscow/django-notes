@@ -162,6 +162,6 @@ db.cnf
 sprinthost.txt
 deploy.txt
 readme.sss
-db.json
+db_with_cnf.json
 
 

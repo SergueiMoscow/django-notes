@@ -84,16 +84,17 @@ with open(os.path.join(BASE_DIR, 'db.json'), 'r') as f:
     db_config = json.load(f)
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'OPTIONS': {
-            'read_default_file': os.path.join(BASE_DIR, "db.cnf"),
-            "init_command": "SET default_storage_engine=INNODB; \
-                SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
-            'charset': 'utf8mb4',
-            'use_unicode': True,
-        }
-    }
+    'default': db_config
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.mysql',
+    #     'OPTIONS': {
+    #         'read_default_file': os.path.join(BASE_DIR, "db.cnf"),
+    #         "init_command": "SET default_storage_engine=INNODB; \
+    #             SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
+    #         'charset': 'utf8mb4',
+    #         'use_unicode': True,
+    #     }
+    # }
 }
 
 AUTHENTICATION_BACKENDS = (
