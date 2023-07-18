@@ -39,7 +39,7 @@
             <div class="col-md-3 text-end">
                 {# для google логина должна быть ссылка url 'account_login' #}
                 <button type="button" class="btn btn-outline-primary me-2"><a href="{% url 'notes_login' %}">Login</a></button>
-                <button type="button" class="btn btn-primary">Sign-up</button>
+                <button type="button" class="btn btn-primary"><a href="{% url 'notes_register' %}">Sign-up</a></button>
             </div>
             {% endif %}
         </div>

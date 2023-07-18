@@ -29,6 +29,7 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('login/', views.login_view, name='notes_login'),
     path('logout/', views.logout_view, name='notes_logout'),
+    path('register/', views.register_view, name='notes_register'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

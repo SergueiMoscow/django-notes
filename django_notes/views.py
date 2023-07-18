@@ -4,19 +4,17 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.models import SocialAccount
 import requests
 
-from .forms import LoginForm
+from .forms import LoginForm, SignUpForm
 
 
 def login_view(request):
     if request.method == 'POST':
-        form = LoginForm(request.POST)
+        form = LoginForm(data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
-            user = authenticate(request, username=username, password=password)
+            user = form.get_user()
             if user is not None:
                 login(request, user)
-                return redirect('index')  # здесь можно указать URL-адрес перенаправления после успешной аутентификации
+                return redirect('index')
             else:
                 form.add_error(None, "Invalid username or password")
     else:
@@ -27,6 +25,24 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('index')
+
+
+def register_view(request):
+    if request.method == 'POST':
+        form = SignUpForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            raw_password = form.cleaned_data.get('password1')
+            # user = authenticate(username, raw_password)
+            login(request) #, user)
+            print('test1')
+            return redirect('home')
+    else:
+        form = SignUpForm()
+        return render(request, 'signup.html', {'form': form})
+    return redirect('index')
+
 
 
 def google_callback(request):

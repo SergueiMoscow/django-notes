@@ -83,6 +83,8 @@ def new(request):
             return redirect('index')
 
 
+
+
 def tags(request):
     """
     Generates JSON list of tags

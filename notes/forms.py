@@ -6,6 +6,7 @@ from notes.models import Note, Tag
 class NoteModelForm(forms.ModelForm):
     image = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
 
+    # def __init__(self)
     class Meta:
         model = Note
         fields = ['title', 'body', 'image', 'private']

@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     # 'whitenoise.runserver_nostatic',
     'corsheaders',
+    'crispy_forms',
+    'crispy_bootstrap4',
 ]
 
 MIDDLEWARE = [
@@ -165,3 +167,4 @@ SOCIALACCOUNT_PROVIDERS = {
 }
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
