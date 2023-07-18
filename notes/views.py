@@ -8,6 +8,13 @@ from notes.forms import NoteModelForm, TagModelForm
 from notes.models import Tag, Note
 from django.http import JsonResponse
 from django.core import serializers
+import logging
+from django_notes.settings import BASE_DIR
+
+
+def set_logger():
+    logging.basicConfig(filename=f'{BASE_DIR}/logs/debug.log', level=logging.DEBUG,
+                        format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 
 def get_list(request):
@@ -39,6 +46,9 @@ def index(request):
     """
     Shows main page with list of notes
     """
+    set_logger()
+    logger = logging.getLogger(__name__)
+    logger.debug("vew.index")
     notes = get_list(request)
     return render(request, 'notes/index.html', {'notes': notes})
 
@@ -65,12 +75,12 @@ def new(request):
                     break
             return redirect('index')
     else:
-        if user.is_authenticated():
+        if user.is_authenticated:
             note_form = NoteModelForm()
             context = {'note_form': note_form, 'js_tags': '[]'}
+            return render(request, 'notes/edit.html', context)
         else:
-            context = {}
-        return render(request, 'notes/edit.html', context)
+            return redirect('index')
 
 
 def tags(request):

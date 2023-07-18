@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+import json
 
 from dotenv import load_dotenv
 
@@ -17,7 +18,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['notes.sushkovs.com', '127.0.0.1']
+ALLOWED_HOSTS = ['notes.sushkovs.com', 'notes.sushkovs.ru', '127.0.0.1']
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+       'http://localhost:8000',
+       'http://notes.sushkovs.com',
+       'http://notes.sushkovs.ru',
+)
 
 # Application definition
 
@@ -35,6 +42,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     # 'whitenoise.runserver_nostatic',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -46,6 +54,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'django_notes.urls'
@@ -71,6 +80,8 @@ WSGI_APPLICATION = 'django_notes.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
+with open(os.path.join(BASE_DIR, 'db.json'), 'r') as f:
+    db_config = json.load(f)
 
 DATABASES = {
     'default': {
@@ -150,3 +161,5 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
+
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
