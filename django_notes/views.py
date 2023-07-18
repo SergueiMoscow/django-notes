@@ -46,7 +46,6 @@ def register_view(request):
     return redirect('index')
 
 
-
 def google_callback(request):
     adapter = GoogleOAuth2Adapter(client_id='your_client_id', client_secret='your_client_secret')
     token = adapter.get_access_token(request)

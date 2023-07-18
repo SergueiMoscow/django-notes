@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 
+from bleach import clean
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -39,6 +40,9 @@ def get_list(request):
         notes = Note.objects.filter(Q(private=False) & condition).all()
     for note in notes:
         note.tags = Tag.objects.filter(note_id=note.id)
+        note.body = clean(note.body, tags=['br', 'p', 'hr'])
+        note.body = note.body[:100].replace('\n', '<br />')
+
     return notes
 
 
