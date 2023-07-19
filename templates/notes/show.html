@@ -1,5 +1,6 @@
-{% extends 'main.html' %} {% block content %}
+{% extends 'main.html' %}
 {% block title %}{{ note.title }}{% endblock %}
+{% block content %}
 <script type="text/javascript">
     delete_note = () => {
         modal_delete = document.getElementById('modal-delete');

@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 
 from bleach import clean
+from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 
@@ -46,6 +47,11 @@ def get_list(request):
     return notes
 
 
+def paginate_notes(notes, page_number):
+    paginator = Paginator(notes, 20) # разбиваем на страницы по 10 элементов
+    return paginator.get_page(page_number)
+
+
 def index(request):
     """
     Shows main page with list of notes
@@ -53,7 +59,7 @@ def index(request):
     set_logger()
     logger = logging.getLogger(__name__)
     logger.debug("vew.index")
-    notes = get_list(request)
+    notes = paginate_notes(get_list(request), request.GET.get('page'))
     return render(request, 'notes/index.html', {'notes': notes})
 
 
@@ -85,7 +91,6 @@ def new(request):
             return render(request, 'notes/edit.html', context)
         else:
             return redirect('index')
-
 
 
 def tags(request):
@@ -121,7 +126,7 @@ def list_notes(request):
     :param request:
     :return:
     """
-    notes = get_list(request)
+    notes = paginate_notes(get_list(request), request.GET.get('page'))
     return render(request, 'notes/list.html', {'notes': notes})
 
 

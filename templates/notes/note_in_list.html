@@ -1,5 +1,9 @@
 <div class="note_in_list">
-    <div class="note-title"><a class="note-url" href="{% url 'note_show' note_id=note.id %}"><h2>{{ note.title }}</h2></a></div>
+    <div class="note-title"><a class="note-url" href="{% url 'note_show' note_id=note.id %}"><h2>{{ note.title }}</h2></a>
+        {% if note.private %}
+        <span class="note-private">(private)</span>
+        {% endif %}
+    </div>
     <div class="note-body">{{ note.body|safe }}</div>
     {% if note.image %}
     <div class="note-image"><img src="{{ note.image.url }}" alt="Note image"></div>

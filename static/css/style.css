@@ -84,3 +84,8 @@
 .btn-primary :hover {
     color: #fff;
 }
+
+.note-title {
+    display: flex;
+    justify-content: space-between;
+}
