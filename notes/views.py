@@ -31,19 +31,23 @@ def get_list(request):
         condition = condition_not_deleted & \
                     (Q(title__icontains=request.GET.get('q')) | Q(body__icontains=request.GET.get('q')))
 
+    if request.GET.get('tag'):
+        condition = condition & Q(tag__tag=request.GET.get('tag'))
+
     if request.user.is_authenticated:
         notes = Note.objects.filter(
             Q(user_id=request.user) &
             condition &
             Q(deleted=False)
-        )
+        ).prefetch_related('user__userprofile')
     else:
-        notes = Note.objects.filter(Q(private=False) & condition).all()
+        notes = Note.objects.filter(Q(private=False) & condition).prefetch_related('user__userprofile').all()
     for note in notes:
         note.tags = Tag.objects.filter(note_id=note.id)
         note.body = clean(note.body, tags=['br', 'p', 'hr'])
         note.body = note.body[:100].replace('\n', '<br />')
-
+        avatar = note.user.userprofile.avatar
+        note.avatar = avatar
     return notes
 
 

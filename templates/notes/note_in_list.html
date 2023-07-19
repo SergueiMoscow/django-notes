@@ -1,16 +1,28 @@
-<div class="note_in_list">
-    <div class="note-title"><a class="note-url" href="{% url 'note_show' note_id=note.id %}"><h2>{{ note.title }}</h2></a>
-        {% if note.private %}
-        <span class="note-private">(private)</span>
-        {% endif %}
+{% load static %}
+<div class="note-in-list">
+    <div class="note-list-user">
+        <div class="note-avatar">
+            <img src="{{ note.avatar.url }}" width="32" height="32" class="rounded-circle">
+        </div>
+        <div class="note-username">{{ note.user.username }}</div>
+        <div class="note-created_at">{{ note.created_at }}</div>
     </div>
-    <div class="note-body">{{ note.body|safe }}</div>
-    {% if note.image %}
-    <div class="note-image"><img src="{{ note.image.url }}" alt="Note image"></div>
-    {% endif %}
-    <div class="note-tags">
-        {% for tag in note.tags %}
-        <div class="note-tag-list">{{ tag.tag }}</div>
-        {% endfor %}
+    <div class="note-list-note">
+        <div class="note-title"><a class="note-url" href="{% url 'note_show' note_id=note.id %}">
+            <h2>{{ note.title }}</h2></a>
+            {% if note.private %}
+            <span class="note-private">(private)</span>
+            {% endif %}
+        </div>
+        <div class="note-body">{{ note.body|safe }}</div>
+        {% if note.image %}
+        <div class="note-image"><img src="{{ note.image.url }}" alt="Note image"></div>
+        {% endif %}
+        {{ note.user.username }}
+        <div class="note-tags">
+            {% for tag in note.tags %}
+            <div class="note-tag-list"><a href="{% url 'index' %}?tag={{ tag.tag }}" class="url-tag">{{ tag.tag }}</a></div>
+            {% endfor %}
+        </div>
     </div>
 </div>
