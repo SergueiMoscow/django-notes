@@ -19,7 +19,8 @@ from django.contrib import admin
 from django.urls import path, include
 from django.views.generic import RedirectView
 
-from django_notes import settings, views
+from django_notes import views
+from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),

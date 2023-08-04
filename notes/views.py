@@ -1,13 +1,18 @@
 import json
+import os
+import re
 from datetime import datetime
 
 from bleach import clean
+from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 
+import hidden_config
+from notes.Shares import Shares
 from notes.forms import NoteModelForm, TagModelForm
-from notes.models import Tag, Note
+from notes.models import Tag, Note, UserProfile
 from django.http import JsonResponse
 from django.core import serializers
 import logging
@@ -45,14 +50,14 @@ def get_list(request):
     for note in notes:
         note.tags = Tag.objects.filter(note_id=note.id)
         note.body = clean(note.body, tags=['br', 'p', 'hr'])
-        note.body = note.body[:100].replace('\n', '<br />')
+        note.body = note.body[:200].replace('\n', '<br />')
         avatar = note.user.userprofile.avatar
         note.avatar = avatar
     return notes
 
 
 def paginate_notes(notes, page_number):
-    paginator = Paginator(notes, 20) # разбиваем на страницы по 10 элементов
+    paginator = Paginator(notes, 20)
     return paginator.get_page(page_number)
 
 
@@ -63,10 +68,20 @@ def index(request):
     set_logger()
     logger = logging.getLogger(__name__)
     logger.debug("vew.index")
+    if request.user.is_authenticated:
+        add_shared(request)
     notes = paginate_notes(get_list(request), request.GET.get('page'))
     return render(request, 'notes/index.html', {'notes': notes})
 
 
+def add_shared(request):
+    """
+    Calls Shares class for add shared notes
+    """
+    shares = Shares(request.user)
+    shares.process()
+
+@login_required
 def new(request):
     """
     Shows form to create new note
@@ -133,7 +148,10 @@ def list_notes(request):
     notes = paginate_notes(get_list(request), request.GET.get('page'))
     return render(request, 'notes/list.html', {'notes': notes})
 
+# @login_required()
 
+
+@login_required
 def edit(request, note_id):
     debug = True
     note = get_object_or_404(Note, pk=note_id)
@@ -174,6 +192,7 @@ def edit(request, note_id):
     return redirect('note_show', note_id=note_id)
 
 
+@login_required
 def delete(request, note_id):
     if request.method == 'POST':
         note = get_object_or_404(Note, pk=note_id)

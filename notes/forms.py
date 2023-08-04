@@ -6,7 +6,6 @@ from notes.models import Note, Tag
 class NoteModelForm(forms.ModelForm):
     image = forms.ImageField(required=False, widget=forms.FileInput(attrs={'class': 'form-control'}))
 
-    # def __init__(self)
     class Meta:
         model = Note
         fields = ['title', 'body', 'image', 'private']
@@ -30,6 +29,3 @@ class TagModelForm(forms.ModelForm):
     class Meta:
         model = Tag
         fields = ['tag']
-        # widgets = {
-        #     'tag': forms.TextInput(attrs={'required': False, 'placeholder': 'Введите тег', 'class': "form-control"}),
-        # }

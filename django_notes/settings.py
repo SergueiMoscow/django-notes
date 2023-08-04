@@ -1,9 +1,8 @@
 import os
 from pathlib import Path
 import json
-
 from dotenv import load_dotenv
-from hidden_config import SECRET_KEY
+from hidden_config import SECRET_KEY, DEBUG
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -19,7 +18,7 @@ load_dotenv()
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['notes.sushkovs.com', 'notes.sushkovs.ru', '127.0.0.1']
+ALLOWED_HOSTS = ['notes.sushkovs.com', 'notes.sushkovs.ru', '127.0.0.1', '192.168.10.15']
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
        'http://localhost:8000',
@@ -169,3 +168,4 @@ SOCIALACCOUNT_PROVIDERS = {
 
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+# AUTH_USER_MODEL = 'notes.User'

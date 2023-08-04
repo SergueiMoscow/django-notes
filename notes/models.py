@@ -1,7 +1,10 @@
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser, User
 from django.db import models
 from datetime import datetime
 import os
+
+import notes
+from django_notes import settings
 
 
 def get_attachment_path(instance, filename):
@@ -14,6 +17,17 @@ def get_attachment_path(instance, filename):
 
 class TagManager(models.Manager):
     pass
+
+
+class UserProfile(models.Model):
+    db_table = 'notes_user'
+    objects = TagManager()
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
+    avatar = models.ImageField(null=True, blank=True, upload_to="images/profile/")
+    telegram = models.CharField(max_length=50, null=True, default=None)
+
+    def __str__(self):
+        return str(self.user)
 
 
 class Note(models.Model):
@@ -30,6 +44,8 @@ class Note(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+        verbose_name = 'Заметка'
+        verbose_name_plural = 'Заметки'
 
     def __str__(self):
         return f'id: {self.id}, title: {self.title}, D: {self.deleted}'
@@ -60,12 +76,3 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.tag
-
-
-class UserProfile(models.Model):
-    objects = TagManager()
-    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
-    avatar = models.ImageField(null=True, blank=True, upload_to="images/profile/")
-
-    def __str__(self):
-        return str(self.user)

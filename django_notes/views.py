@@ -5,7 +5,8 @@ from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.models import SocialAccount
 import requests
 
-from .forms import LoginForm, SignUpForm, ProfileForm
+from notes.models import UserProfile
+from .forms import LoginForm, SignUpForm, UserProfileForm
 
 
 def login_view(request):
@@ -49,13 +50,15 @@ def register_view(request):
 
 @login_required
 def edit_profile(request):
+    user_profile = UserProfile.objects.get(user=request.user)
+
     if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=request.user)
+        form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
         if form.is_valid():
             form.save()
             return redirect('index')
     else:
-        form = ProfileForm(instance=request.user)
+        form = UserProfileForm(instance=user_profile)
     return render(request, 'edit_profile.html', {'form': form})
 
 
