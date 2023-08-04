@@ -1,9 +1,13 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.models import SocialAccount
 import requests
+from django.urls import reverse_lazy
+from django.views.generic import CreateView
 
 from notes.models import UserProfile
 from .forms import LoginForm, SignUpForm, UserProfileForm
@@ -16,6 +20,7 @@ def login_view(request):
             user = form.get_user()
             if user is not None:
                 login(request, user)
+                create_profile_if_not_exists(request)
                 return redirect('index')
             else:
                 form.add_error(None, "Invalid username or password")
@@ -24,28 +29,44 @@ def login_view(request):
     return render(request, 'login.html', {'form': form})
 
 
+def create_profile_if_not_exists(request):
+    try:
+        user_profile = UserProfile.objects.get(user=request.user)
+    except ObjectDoesNotExist:
+        user_profile = UserProfile(user=request.user)
+        user_profile.save()
+    return
+
+
 def logout_view(request):
     logout(request)
     return redirect('index')
 
 
-def register_view(request):
-    if request.method == 'POST':
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(request, username=username, password=raw_password)
-            print(user)
-            user.backend = 'django.contrib.auth.backends.ModelBackend'
-            login(request, user)
-            print('test1')
-            return redirect('index')
-    else:
-        form = SignUpForm()
-        return render(request, 'signup.html', {'form': form})
-    return redirect('index')
+class UserRegistrationView(CreateView):
+    model = User
+    form_class = SignUpForm
+    template_name = 'signup.html'
+    success_url = reverse_lazy('login')
+
+
+# def register_view(request):
+#     if request.method == 'POST':
+#         form = SignUpForm(request.POST)
+#         if form.is_valid():
+#             form.save()
+#             username = form.cleaned_data.get('username')
+#             raw_password = form.cleaned_data.get('password1')
+#             user = authenticate(request, username=username, password=raw_password)
+#             print(user)
+#             user.backend = 'django.contrib.auth.backends.ModelBackend'
+#             login(request, user)
+#             print('test1')
+#             return redirect('index')
+#     else:
+#         form = SignUpForm()
+#         return render(request, 'signup.html', {'form': form})
+#     return redirect('index')
 
 
 @login_required

@@ -1,5 +1,3 @@
-import json
-import os
 import re
 from datetime import datetime
 
@@ -49,11 +47,25 @@ def get_list(request):
         notes = Note.objects.filter(Q(private=False) & condition).prefetch_related('user__userprofile').all()
     for note in notes:
         note.tags = Tag.objects.filter(note_id=note.id)
-        note.body = clean(note.body, tags=['br', 'p', 'hr'])
-        note.body = note.body[:200].replace('\n', '<br />')
+        note.body = clean(note.body, tags=['br', 'p', 'hr', 'a'])
+        note.body = replace_urls_with_links(note.body[:200].replace('\n', '<br />'))
         avatar = note.user.userprofile.avatar
         note.avatar = avatar
     return notes
+
+
+def replace_urls_with_links(text):
+    # Регулярное выражение для поиска URL
+    url_pattern = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+
+    # Функция для замены URL на теги <a href...>
+    def replace_url(match):
+        url = match.group(0)
+        return f'<a href="{url}">{url}</a>'
+
+    # Замена URL на теги <a href...>
+    replaced_text = re.sub(url_pattern, replace_url, text)
+    return replaced_text
 
 
 def paginate_notes(notes, page_number):
@@ -80,6 +92,7 @@ def add_shared(request):
     """
     shares = Shares(request.user)
     shares.process()
+
 
 @login_required
 def new(request):

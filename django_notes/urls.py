@@ -30,7 +30,8 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('login/', views.login_view, name='notes_login'),
     path('logout/', views.logout_view, name='notes_logout'),
-    path('register/', views.register_view, name='notes_register'),
+    # path('register/', views.register_view, name='notes_register'),
+    path('register/', views.UserRegistrationView.as_view(), name='notes_register'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
 ]
 
