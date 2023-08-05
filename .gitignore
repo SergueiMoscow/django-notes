@@ -171,6 +171,8 @@ db*.json
 secret.py
 fixtures
 
-
-
+db_sprinthost.cnf
+fixtures*
+media
+attachments
 
