@@ -16,6 +16,7 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.contrib.auth.views import LogoutView
 from django.urls import path, include
 from django.views.generic import RedirectView
 
@@ -28,8 +29,10 @@ urlpatterns = [
     path('', RedirectView.as_view(url='/notes/', permanent=True)),
     path('accounts/google/login/callback/', views.google_callback, name='google_callback'),
     path('accounts/', include('allauth.urls')),
-    path('login/', views.login_view, name='notes_login'),
-    path('logout/', views.logout_view, name='notes_logout'),
+    # path('login/', views.login_view, name='notes_login'),
+    path('login/', views.UserLoginView.as_view(), name='notes_login'),
+    # path('logout/', views.logout_view, name='notes_logout'),
+    path('logout/', LogoutView.as_view(), name='notes_logout'),
     # path('register/', views.register_view, name='notes_register'),
     path('register/', views.UserRegistrationView.as_view(), name='notes_register'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),

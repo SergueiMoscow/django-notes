@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 import json
+
+from django.urls import reverse_lazy
 from dotenv import load_dotenv
 from hidden_config import SECRET_KEY, DEBUG
 
@@ -169,3 +171,6 @@ SOCIALACCOUNT_PROVIDERS = {
 SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # AUTH_USER_MODEL = 'notes.User'
+# LOGIN_REDIRECT_URL = '/admin'
+LOGOUT_REDIRECT_URL = '/'
+#

@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib.auth.views import LoginView
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
@@ -13,20 +14,10 @@ from notes.models import UserProfile
 from .forms import LoginForm, SignUpForm, UserProfileForm
 
 
-def login_view(request):
-    if request.method == 'POST':
-        form = LoginForm(data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            if user is not None:
-                login(request, user)
-                create_profile_if_not_exists(request)
-                return redirect('index')
-            else:
-                form.add_error(None, "Invalid username or password")
-    else:
-        form = LoginForm()
-    return render(request, 'login.html', {'form': form})
+class UserLoginView(LoginView):
+    template_name = 'login.html'
+    form_class = LoginForm
+    next_page = reverse_lazy('index')
 
 
 def create_profile_if_not_exists(request):
