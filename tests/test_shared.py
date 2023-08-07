@@ -71,4 +71,3 @@ class TestShared(TestCase):
         pass
         # self.userprofile.delete()
         # self.user.delete()
-

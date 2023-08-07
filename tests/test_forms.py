@@ -8,7 +8,7 @@ class NoteFormTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        print(f'\nTesting forms')
+        print('\nTesting forms')
 
     def test_title(self):
         form = NoteModelForm()

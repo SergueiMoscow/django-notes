@@ -6,20 +6,17 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
-
-import hidden_config
 from notes.Shares import Shares
-from notes.forms import NoteModelForm, TagModelForm
-from notes.models import Tag, Note, UserProfile
+from notes.forms import NoteModelForm
+from notes.models import Tag, Note
 from django.http import JsonResponse
-from django.core import serializers
 import logging
 from django_notes.settings import BASE_DIR
 
 
 def set_logger():
     logging.basicConfig(filename=f'{BASE_DIR}/logs/debug.log', level=logging.DEBUG,
-                        format=f'%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
+                        format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 
 def get_list(request):

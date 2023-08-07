@@ -24,7 +24,10 @@ class NoteModelForm(forms.ModelForm):
 
 
 class TagModelForm(forms.ModelForm):
-    tag = forms.CharField(required=False, widget=forms.TextInput(attrs={'required': False, 'placeholder': 'Введите тег', 'class': "form-control"}))
+    tag = forms.CharField(
+        required=False,
+        widget=forms.TextInput(attrs={'required': False, 'placeholder': 'Введите тег', 'class': "form-control"})
+    )
 
     class Meta:
         model = Tag

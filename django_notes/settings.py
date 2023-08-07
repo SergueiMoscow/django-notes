@@ -1,24 +1,17 @@
 import os
 from pathlib import Path
 import json
-
-from django.urls import reverse_lazy
 from dotenv import load_dotenv
-from hidden_config import SECRET_KEY, DEBUG
+from hidden_config import SECRET_KEY, DEBUG, DOMAIN_NAME, EMAIL_HOST_USER, \
+    EMAIL_HOST_PASSWORD, EMAIL_HOST, EMAIL_PORT, EMAIL_USE_SSL
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()
 
+SECRET_KEY = SECRET_KEY
 
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = os.environ.get('SECRET_KEY')
-
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = DEBUG
+DOMAIN_NAME = DOMAIN_NAME
 
 ALLOWED_HOSTS = ['notes.sushkovs.com', 'notes.sushkovs.ru', '127.0.0.1', '192.168.10.15']
 CORS_ORIGIN_ALLOW_ALL = False
@@ -174,3 +167,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 # LOGIN_REDIRECT_URL = '/admin'
 LOGOUT_REDIRECT_URL = '/'
 #
+# EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = EMAIL_HOST
+EMAIL_PORT = EMAIL_PORT
+EMAIL_HOST_USER = EMAIL_HOST_USER
+EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
+EMAIL_USE_SSL = EMAIL_USE_SSL

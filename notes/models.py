@@ -1,10 +1,17 @@
-from django.contrib.auth.models import AbstractUser, User
+import uuid
+
+from django.contrib.auth.models import User
 from django.db import models
 from datetime import datetime
 import os
+from django.core.mail import send_mail
+from django.urls import reverse
+from django.conf import settings
+from django.utils.timezone import now
 
-import notes
-from django_notes import settings
+
+# import notes
+# from django_notes import settings
 
 
 def get_attachment_path(instance, filename):
@@ -25,6 +32,7 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
     avatar = models.ImageField(null=True, blank=True, upload_to="images/profile/")
     telegram = models.CharField(max_length=50, null=True, default=None)
+    is_verified_email = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.user)
@@ -76,3 +84,41 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.tag
+
+
+class EmailVerification(models.Model):
+    objects = TagManager()
+    code = models.UUIDField(unique=True, primary_key=True, default=uuid.uuid4, editable=False)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expiration = models.DateTimeField()
+
+    def __str__(self):
+        return f'EmailVerification object for {self.user.email}'
+
+    def send_verification_email(self):
+        link = reverse('email_verification', kwargs={'email': self.user.email, 'code': self.code})
+        verification_link = f'{settings.DOMAIN_NAME}{link}'
+        subject = f'Подтверждение учётной записи для {self.user.username}'
+        message = 'Для подтверждения учётной записи {} перейдите по ссылке: \n{}'.format(
+            self.user.username,
+            verification_link
+        )
+        html_message = 'Для подтверждения учётной записи <b>{}</b> <a href="{}"> перейдите по ссылке </a>'.format(
+            self.user.username,
+            verification_link
+        )
+        print(f'User{settings.EMAIL_HOST_USER} -> {settings.EMAIL_HOST_PASSWORD}')
+        send_mail(
+            subject=subject,
+            message=message,
+            html_message=html_message,
+            from_email=settings.EMAIL_HOST_USER,
+            recipient_list=(self.user.email, ),
+            fail_silently=False,
+            auth_user=settings.EMAIL_HOST_USER,
+            auth_password=settings.EMAIL_HOST_PASSWORD
+        )
+
+    def is_expired(self):
+        return True if now() >= self.expiration else False

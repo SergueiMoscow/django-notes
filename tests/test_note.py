@@ -8,7 +8,7 @@ class NoteModelTest(TestCase):
 
     @classmethod
     def setUpTestData(cls):
-        print(f'\nTesting models')
+        print('\nTesting models')
         User.objects.create(username='test_user')
         Note.objects.create(title='Main', body='test body', user_id=1)
 

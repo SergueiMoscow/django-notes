@@ -23,6 +23,8 @@ from django.views.generic import RedirectView
 from django_notes import views
 from django.conf import settings
 
+from django_notes.views import EmailVerificationView
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('notes/', include('notes.urls')),
@@ -36,6 +38,7 @@ urlpatterns = [
     # path('register/', views.register_view, name='notes_register'),
     path('register/', views.UserRegistrationView.as_view(), name='notes_register'),
     path('edit_profile/', views.edit_profile, name='edit_profile'),
+    path('verify/<str:email>/<uuid:code>', EmailVerificationView.as_view(), name='email_verification'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

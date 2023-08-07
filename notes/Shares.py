@@ -68,7 +68,6 @@ class Shares:
         if filename[0: 10] == self.today:
             self.today_notes_charged = local_notes_charged
 
-
         return local_notes_charged
 
     def __get_matched_files(self):

@@ -1,16 +1,18 @@
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
+from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import logout
 from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from allauth.socialaccount.models import SocialAccount
 import requests
-from django.urls import reverse_lazy
-from django.views.generic import CreateView
+from django.urls import reverse_lazy, reverse
+from django.views.generic import CreateView, TemplateView
+from django.shortcuts import HttpResponseRedirect
 
-from notes.models import UserProfile
+from notes.models import UserProfile, EmailVerification
 from .forms import LoginForm, SignUpForm, UserProfileForm
 
 
@@ -34,11 +36,12 @@ def logout_view(request):
     return redirect('index')
 
 
-class UserRegistrationView(CreateView):
+class UserRegistrationView(SuccessMessageMixin, CreateView):
     model = User
     form_class = SignUpForm
     template_name = 'signup.html'
-    success_url = reverse_lazy('login')
+    success_url = reverse_lazy('notes_login')
+    success_message = 'Вы успешно заргеистрированы'
 
 
 # def register_view(request):
@@ -90,3 +93,20 @@ def google_callback(request):
     else:
         pass
 # handle error
+
+
+class EmailVerificationView(TemplateView):
+    template_name = 'registration/email_verification.html'
+
+    def get(self, request, *args, **kwargs):
+        super(EmailVerificationView, self).get(request, *args, **kwargs)
+        code = kwargs['code']
+        user = User.objects.get(email=kwargs['email'])
+        user_profile = UserProfile.objects.get(user=user)
+        email_verifications = EmailVerification.objects.filter(user=user, code=code)
+        if email_verifications.exists() and not email_verifications.first().is_expired():
+            user_profile.is_verified_email = True
+            user_profile.save()
+            return super(EmailVerificationView, self).get(request)
+        else:
+            return HttpResponseRedirect(reverse('index'))
