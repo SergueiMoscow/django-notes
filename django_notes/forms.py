@@ -1,10 +1,14 @@
+import uuid
+from datetime import timedelta
+
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Submit
 from django import forms
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
+from django.utils.timezone import now
 
-from notes.models import UserProfile
+from notes.models import UserProfile, EmailVerification
 
 
 class LoginForm(AuthenticationForm):
@@ -24,6 +28,14 @@ class SignUpForm(UserCreationForm):
         self.helper = FormHelper()
         self.helper.form_method = 'post'
         self.helper.add_input(Submit('submit', 'Send'))
+
+    def save(self, commit=True):
+        user = super(SignUpForm, self).save(commit=True)
+        UserProfile.objects.create(user=user)
+        expiration = now() + timedelta(hours=24)
+        email_verification = EmailVerification.objects.create(code=uuid.uuid4(), user=user, expiration=expiration)
+        email_verification.save()
+        email_verification.send_verification_email()
 
 
 class UserProfileForm(forms.ModelForm):

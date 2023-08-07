@@ -1,4 +1,5 @@
 {% extends 'admin/login.html' %}
+{% load socialaccount %}
 {% block title %}
     Мои заметки
 {% endblock %}
@@ -19,5 +20,9 @@
   <div class="submit-row">
     <input type="submit" value="Войти">
   </div>
+    <div>
+      <a href="{% provider_login_url 'github' process='connect' %}">GitHub</a>
+
+    </div>
 </form>
 {% endblock %}

@@ -27,7 +27,11 @@ class Shares:
 
     def __init__(self, user):
         self.user = user
-        self.user_profile = UserProfile.objects.get(user=user)
+        user_profiles = UserProfile.objects.filter(user=user)
+        if not user_profiles:
+            self.user_profile = UserProfile.objects.create(user=self.user)
+        else:
+            self.user_profile = user_profiles[0]
         self.today = datetime.now().strftime('%Y-%m-%d')
         self.path = self.__get_path()
 
