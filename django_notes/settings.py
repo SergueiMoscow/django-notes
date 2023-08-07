@@ -163,6 +163,7 @@ SOCIALACCOUNT_PROVIDERS = {
             'user',
             'repo',
             'read:org',
+            'user:email',
         ],
     },
     'google': {
@@ -189,5 +190,6 @@ EMAIL_HOST_USER = EMAIL_HOST_USER
 EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
 EMAIL_USE_SSL = EMAIL_USE_SSL
 
-ACCOUNT_DEFAULT_HTTP_PROTOCOL='https'
+ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
+SOCIALACCOUNT_QUERY_EMAIL = True
 
