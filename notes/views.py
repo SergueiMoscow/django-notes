@@ -1,3 +1,4 @@
+import logging
 import re
 from datetime import datetime
 
@@ -5,13 +6,13 @@ from bleach import clean
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.db.models import Q
-from django.shortcuts import render, redirect, get_object_or_404
-from notes.Shares import Shares
-from notes.forms import NoteModelForm
-from notes.models import Tag, Note
 from django.http import JsonResponse
-import logging
+from django.shortcuts import get_object_or_404, redirect, render
+
 from django_notes.settings import BASE_DIR
+from notes.forms import NoteModelForm
+from notes.models import Note, Tag
+from notes.Shares import Shares
 
 
 def set_logger():

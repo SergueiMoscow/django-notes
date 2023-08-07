@@ -1,9 +1,12 @@
+import json
 import os
 from pathlib import Path
-import json
+
 from dotenv import load_dotenv
-from hidden_config import SECRET_KEY, DEBUG, DOMAIN_NAME, EMAIL_HOST_USER, \
-    EMAIL_HOST_PASSWORD, EMAIL_HOST, EMAIL_PORT, EMAIL_USE_SSL
+
+from hidden_config import (DEBUG, DOMAIN_NAME, EMAIL_HOST, EMAIL_HOST_PASSWORD,
+                           EMAIL_HOST_USER, EMAIL_PORT, EMAIL_USE_SSL,
+                           SECRET_KEY)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv()

@@ -1,4 +1,5 @@
 import os
+
 import django
 
 # Устанавливаем переменную окружения DJANGO_SETTINGS_MODULE

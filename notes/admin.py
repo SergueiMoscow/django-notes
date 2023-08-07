@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Note, Tag, EmailVerification
+from .models import EmailVerification, Note, Tag
 
 admin.site.site_header = 'Мои заметки'
 # admin.site.register(Note)

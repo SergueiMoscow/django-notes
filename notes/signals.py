@@ -1,10 +1,12 @@
+import uuid
+from datetime import timedelta
+
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from datetime import timedelta
-import uuid
 from django.utils.timezone import now
-from notes.models import UserProfile, EmailVerification
+
+from notes.models import EmailVerification, UserProfile
 
 
 @receiver(post_save, sender=User)

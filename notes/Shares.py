@@ -6,7 +6,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 
 import hidden_config
-from notes.models import UserProfile, Note
+from notes.models import Note, UserProfile
 
 
 class Shares:

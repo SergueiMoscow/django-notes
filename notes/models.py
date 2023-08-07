@@ -1,14 +1,13 @@
-import uuid
-
-from django.contrib.auth.models import User
-from django.db import models
-from datetime import datetime
 import os
-from django.core.mail import send_mail
-from django.urls import reverse
-from django.conf import settings
-from django.utils.timezone import now
+import uuid
+from datetime import datetime
 
+from django.conf import settings
+from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.db import models
+from django.urls import reverse
+from django.utils.timezone import now
 
 # import notes
 # from django_notes import settings

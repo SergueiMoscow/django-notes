@@ -1,18 +1,18 @@
+import requests
+from allauth.socialaccount.models import SocialAccount
+from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
+from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
 from django.contrib.messages.views import SuccessMessageMixin
 from django.core.exceptions import ObjectDoesNotExist
-from django.shortcuts import render, redirect
-from django.contrib.auth import logout
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
-from allauth.socialaccount.models import SocialAccount
-import requests
-from django.urls import reverse_lazy, reverse
+from django.shortcuts import HttpResponseRedirect, redirect, render
+from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, TemplateView
-from django.shortcuts import HttpResponseRedirect
 
-from notes.models import UserProfile, EmailVerification
+from notes.models import EmailVerification, UserProfile
+
 from .forms import LoginForm, SignUpForm, UserProfileForm
 
 

@@ -2,12 +2,12 @@ import os
 import shutil
 from datetime import datetime
 
-from django.test import TestCase
 from django.contrib.auth.models import User
+from django.test import TestCase
 
-from notes.Shares import Shares
-from notes.models import UserProfile, Note
 from hidden_config import TELEGRAM_FILES
+from notes.models import Note, UserProfile
+from notes.Shares import Shares
 
 
 class TestShared(TestCase):
