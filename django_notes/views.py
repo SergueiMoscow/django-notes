@@ -43,6 +43,9 @@ class UserRegistrationView(SuccessMessageMixin, CreateView):
     success_url = reverse_lazy('notes_login')
     success_message = 'Вы успешно заргеистрированы'
 
+    def get_success_url(self):
+        return self.success_url
+
 
 # def register_view(request):
 #     if request.method == 'POST':
