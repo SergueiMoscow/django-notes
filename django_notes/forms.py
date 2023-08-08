@@ -8,7 +8,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib.auth.models import User
 from django.utils.timezone import now
 
-from notes.models import UserProfile, EmailVerification
+from notes.models import EmailVerification, UserProfile
 
 
 class LoginForm(AuthenticationForm):

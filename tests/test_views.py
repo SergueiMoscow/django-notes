@@ -1,12 +1,11 @@
 import json
+from http import HTTPStatus
 
-from django.contrib.auth.models import User
 from django.http import JsonResponse
 from django.test import TestCase
 from django.urls import reverse
-from http import HTTPStatus
 
-from notes.models import UserProfile, Note
+from notes.models import Note
 
 
 class IndexViewTest(TestCase):

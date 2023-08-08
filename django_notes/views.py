@@ -1,6 +1,3 @@
-import requests
-from allauth.socialaccount.models import SocialAccount
-from allauth.socialaccount.providers.google.views import GoogleOAuth2Adapter
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
@@ -80,22 +77,22 @@ def edit_profile(request):
     return render(request, 'edit_profile.html', {'form': form})
 
 
-def google_callback(request):
-    adapter = GoogleOAuth2Adapter(client_id='your_client_id', client_secret='your_client_secret')
-    token = adapter.get_access_token(request)
-
-    headers = {'Authorization': f'Bearer {token.token}'}
-    response = requests.get('https://www.googleapis.com/oauth2/v1/userinfo', headers=headers)
-
-    if response.status_code == 200:
-        data = response.json()
-        email = data.get('email')
-        social_account = SocialAccount.objects.get(provider='google', uid=data.get('id'))
-        # do something with the user's social account
-        return redirect('index')
-    else:
-        pass
-# handle error
+# def google_callback(request):
+#     adapter = GoogleOAuth2Adapter(client_id='your_client_id', client_secret='your_client_secret')
+#     token = adapter.get_access_token(request)
+#
+#     headers = {'Authorization': f'Bearer {token.token}'}
+#     response = requests.get('https://www.googleapis.com/oauth2/v1/userinfo', headers=headers)
+#
+#     if response.status_code == 200:
+#         data = response.json()
+#         email = data.get('email')
+#         social_account = SocialAccount.objects.get(provider='google', uid=data.get('id'))
+#         # do something with the user's social account
+#         return redirect('index')
+#     else:
+#         pass
+# # handle error
 
 
 class EmailVerificationView(TemplateView):
