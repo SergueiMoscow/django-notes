@@ -162,6 +162,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': [
             'user',
             'repo',
+            'read:org',
             # 'user:email',
         ],
     },
@@ -190,5 +191,5 @@ EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
 EMAIL_USE_SSL = EMAIL_USE_SSL
 
 ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
-# SOCIALACCOUNT_QUERY_EMAIL = True
+SOCIALACCOUNT_QUERY_EMAIL = True
 

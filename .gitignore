@@ -169,7 +169,7 @@ Dockerfile
 .dockerignore
 db*.json
 secret.py
-fixtures
+notes/fixtures
 
 db_sprinthost.cnf
 fixtures*
