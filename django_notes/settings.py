@@ -162,7 +162,7 @@ SOCIALACCOUNT_PROVIDERS = {
         'SCOPE': [
             'user',
             'repo',
-            'user:email',
+            # 'user:email',
         ],
     },
     'google': {
