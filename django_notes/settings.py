@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'crispy_forms',
     'crispy_bootstrap4',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
@@ -58,8 +59,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    "whitenoise.middleware.WhiteNoiseMiddleware",
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 ROOT_URLCONF = 'django_notes.urls'
@@ -94,9 +96,9 @@ DATABASES = {
     # 'default': {
     #     'ENGINE': 'django.db.backends.mysql',
     #     'OPTIONS': {
-    #         'read_default_file': os.path.join(BASE_DIR, "db.cnf"),
-    #         "init_command": "SET default_storage_engine=INNODB; \
-    #             SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1",
+    #         'read_default_file': os.path.join(BASE_DIR, 'db.cnf'),
+    #         'init_command': 'SET default_storage_engine=INNODB; \
+    #             SET sql_mode='STRICT_TRANS_TABLES', innodb_strict_mode=1',
     #         'charset': 'utf8mb4',
     #         'use_unicode': True,
     #     }
@@ -126,6 +128,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Redis:
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.redis.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379',
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
@@ -146,7 +155,7 @@ STATIC_URL = '/static/'
 # STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, 'static'),
 )
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
@@ -192,3 +201,10 @@ EMAIL_USE_SSL = EMAIL_USE_SSL
 
 # ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 SOCIALACCOUNT_QUERY_EMAIL = True
+
+# for django-debug-toolbar:
+INTERNAL_IPS = [
+    '127.0.0.1',
+    '46.188.82.8',
+    '192.168.10.15',
+]

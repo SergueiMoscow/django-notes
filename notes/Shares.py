@@ -6,6 +6,7 @@ from datetime import datetime
 from django.contrib.auth.models import User
 
 import hidden_config
+from notes.db_queries import get_user_profile
 from notes.models import Note, UserProfile
 
 
@@ -27,11 +28,7 @@ class Shares:
 
     def __init__(self, user):
         self.user = user
-        user_profiles = UserProfile.objects.filter(user=user)
-        if not user_profiles:
-            self.user_profile = UserProfile.objects.create(user=self.user)
-        else:
-            self.user_profile = user_profiles[0]
+        self.user_profile = get_user_profile(user=self.user)
         self.today = datetime.now().strftime('%Y-%m-%d')
         self.path = self.__get_path()
 

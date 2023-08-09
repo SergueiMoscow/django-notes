@@ -18,7 +18,7 @@
         {% if note.image %}
         <div class="note-image"><img src="{{ note.image.url }}" alt="Note image"></div>
         {% endif %}
-        {{ note.user.username }}
+        <a href="{% url 'index' %}?user={{ note.user.id }}">{{ note.user.username }}</a>
         <div class="note-tags">
             {% for tag in note.tags %}
             <div class="note-tag-list"><a href="{% url 'index' %}?tag={{ tag.tag }}" class="url-tag">{{ tag.tag }}</a></div>

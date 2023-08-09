@@ -1,15 +1,15 @@
 import logging
-import re
 from datetime import datetime
 
 from bleach import clean
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
-from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from django_notes.settings import BASE_DIR
+from notes.db_queries import (create_tag, get_list, get_note_by_id,
+                              get_tags_by_note_id, get_tags_by_substring)
 from notes.forms import NoteModelForm
 from notes.models import Note, Tag
 from notes.Shares import Shares
@@ -20,50 +20,43 @@ def set_logger():
                         format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 
-def get_list(request):
-    """
-    Ищет и возвращает список объектов Note
-    :param request: q = подстрока запроса
-    :return:
-    """
-    condition_not_deleted = Q(deleted=False)
-    condition = condition_not_deleted
-    if request.GET.get('q') is not None:
-        condition = condition_not_deleted & \
-                    (Q(title__icontains=request.GET.get('q')) | Q(body__icontains=request.GET.get('q')))
-
-    if request.GET.get('tag'):
-        condition = condition & Q(tag__tag=request.GET.get('tag'))
-
-    if request.user.is_authenticated:
-        notes = Note.objects.filter(
-            Q(user_id=request.user) &
-            condition &
-            Q(deleted=False)
-        ).prefetch_related('user__userprofile')
-    else:
-        notes = Note.objects.filter(Q(private=False) & condition).prefetch_related('user__userprofile').all()
-    for note in notes:
-        note.tags = Tag.objects.filter(note_id=note.id)
-        note.body = clean(note.body, tags=['br', 'p', 'hr', 'a'])
-        note.body = replace_urls_with_links(note.body[:200].replace('\n', '<br />'))
-        avatar = note.user.userprofile.avatar
-        note.avatar = avatar
-    return notes
-
-
-def replace_urls_with_links(text):
-    # Регулярное выражение для поиска URL
-    url_pattern = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
-
-    # Функция для замены URL на теги <a href...>
-    def replace_url(match):
-        url = match.group(0)
-        return f'<a href="{url}">{url}</a>'
-
-    # Замена URL на теги <a href...>
-    replaced_text = re.sub(url_pattern, replace_url, text)
-    return replaced_text
+# def get_list(request):
+#     """
+#     Ищет и возвращает список объектов Note
+#     :param request: q = подстрока запроса
+#     :return:
+#     """
+#     condition_not_deleted = Q(deleted=False)
+#     condition = condition_not_deleted
+#     # Поиск по подстроке
+#     if request.GET.get('q') is not None:
+#         condition = condition_not_deleted & \
+#                     (Q(title__icontains=request.GET.get('q')) | Q(body__icontains=request.GET.get('q')))
+#
+#     # Поиск по тегу
+#     if request.GET.get('tag'):
+#         condition = condition & Q(tag__tag=request.GET.get('tag'))
+#
+#     # Только заметки пользователя
+#     if request.GET.get('user'):
+#         condition = condition & Q(user__id=request.GET.get('user'))
+#         if request.user.is_authenticated and request.user.id == int(request.GET.get('user')):
+#             print(f'Filter without private: user.id:{request.user.id} get: {request.GET.get("user")}')
+#             notes = Note.objects.filter(
+#                 condition
+#             ).prefetch_related('user__userprofile')
+#         else:
+#             print(f'Filter with private: user.id:{request.user.id} get: {request.GET.get("user")}')
+#             notes = Note.objects.filter(Q(private=False) & condition).prefetch_related('user__userprofile').all()
+#     else:
+#         notes = Note.objects.filter(Q(private=False) & condition).prefetch_related('user__userprofile').all()
+#     for note in notes:
+#         note.tags = Tag.objects.filter(note_id=note.id)
+#         note.body = clean(note.body, tags=['br', 'p', 'hr', 'a'])
+#         note.body = replace_urls_with_links(note.body[:200].replace('\n', '<br />'))
+#         avatar = note.user.userprofile.avatar
+#         note.avatar = avatar
+#     return notes
 
 
 def paginate_notes(notes, page_number):
@@ -130,7 +123,7 @@ def tags(request):
     :return: JSON response
     """
     q = request.GET.get('q')
-    list_tags = Tag.objects.filter(Q(tag__icontains=q))
+    list_tags = get_tags_by_substring(q)
     result = {}
     if list_tags is None:
         return JsonResponse(result)
@@ -144,7 +137,7 @@ def show(request, note_id):
     Shows note with template notes/show.html
     """
     note = get_object_or_404(Note, pk=note_id)
-    note.tags = Tag.objects.filter(note_id=note.id)
+    note.tags = get_tags_by_note_id(note_id=note.id)
     note.body = clean(note.body, tags=['br', 'p', 'hr'])
     note.body = note.body.replace('\n', '<br />')
     return render(request, 'notes/show.html', {'note': note})
@@ -158,6 +151,7 @@ def list_notes(request):
     """
     notes = paginate_notes(get_list(request), request.GET.get('page'))
     return render(request, 'notes/list.html', {'notes': notes})
+
 
 # @login_required()
 
@@ -176,7 +170,7 @@ def edit(request, note_id):
             note_obj.save()
             # получаем sets имеющихся и новых тегов
             new_tags = set([value for key, value in request.POST.items() if key.startswith('tag')])
-            old_tags = set([str(tag) for tag in Tag.objects.filter(note_id=note.id)])
+            old_tags = set([str(tag) for tag in get_tags_by_note_id(note_id=note.id)])
             # Генерим новые сеты для удаления и добавления
             tags_to_delete = old_tags - new_tags
             tags_to_add = new_tags - old_tags
@@ -187,15 +181,15 @@ def edit(request, note_id):
                 print(f'tags_to_add: {list(tags_to_add)}')
             Tag.objects.filter(note_id=note.id, tag__in=tags_to_delete).delete()
             for tag in tags_to_add:
-                note = Note.objects.get(id=note_id)
-                Tag.objects.create(tag=tag, note_id=note)
+                note = get_note_by_id(note_id=note_id)
+                create_tag(tag=tag, note_id=note)
             return redirect('note_show', note_id=note_id)
 
         pass
     else:
         if note.user_id == user.id:
             note_form = NoteModelForm(instance=note)
-            note.tags = Tag.objects.filter(note_id=note.id)
+            note.tags = get_tags_by_note_id(note_id=note.id)
             js_tags = [f'"{tag}"' for tag in note.tags]
             js_tags = '[' + ', '.join(js_tags) + ']'
             context = {'note_form': note_form, 'js_tags': js_tags}
