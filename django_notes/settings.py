@@ -208,3 +208,7 @@ INTERNAL_IPS = [
     '46.188.82.8',
     '192.168.10.15',
 ]
+
+# Celery
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
