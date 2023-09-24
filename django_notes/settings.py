@@ -16,13 +16,13 @@ SECRET_KEY = SECRET_KEY
 DEBUG = DEBUG
 DOMAIN_NAME = DOMAIN_NAME
 
-ALLOWED_HOSTS = ['notes.sushkovs.com', 'notes.sushkovs.ru', '127.0.0.1', '192.168.10.15']
+ALLOWED_HOSTS = ['notes.sushkovs.com', 'notes.sushkovs.ru', '127.0.0.1', '192.168.10.15', '192.168.10.10']
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
        'http://localhost:8000',
        'http://notes.sushkovs.com',
        'http://notes.sushkovs.ru',
-       '192.168.10.10:8000',
+       'http://192.168.10.10:8000',
 )
 
 # Application definition
