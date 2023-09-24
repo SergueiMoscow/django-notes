@@ -22,6 +22,7 @@ CORS_ORIGIN_WHITELIST = (
        'http://localhost:8000',
        'http://notes.sushkovs.com',
        'http://notes.sushkovs.ru',
+       '192.168.10.10:8000',
 )
 
 # Application definition
