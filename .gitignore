@@ -165,7 +165,6 @@ readme.sss
 db_with_cnf.json
 hidden_config.py
 remote_config
-Dockerfile
 .dockerignore
 db*.json
 secret.py

@@ -5,7 +5,8 @@ from datetime import datetime
 
 from django.contrib.auth.models import User
 
-import hidden_config
+from django_notes import settings
+# import hidden_config
 from notes.db_queries import get_user_profile
 from notes.models import Note, UserProfile
 
@@ -86,9 +87,9 @@ class Shares:
         """
         if self.user_profile is None or self.user_profile.telegram is None or self.user_profile.telegram == '':
             return
-        if not os.path.exists(os.path.join(hidden_config.TELEGRAM_FILES, self.user_profile.telegram)):
+        if not os.path.exists(os.path.join(settings.TELEGRAM_FILES, self.user_profile.telegram)):
             return
-        path = os.path.join(hidden_config.TELEGRAM_FILES, self.user_profile.telegram)
+        path = os.path.join(settings.TELEGRAM_FILES, self.user_profile.telegram)
         return path
 
     def __get_last_charged(self) -> tuple:

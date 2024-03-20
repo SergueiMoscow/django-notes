@@ -1,22 +1,19 @@
 import json
 import os
 from pathlib import Path
+from environs import Env
 
-from dotenv import load_dotenv
-
-from hidden_config import (DEBUG, DOMAIN_NAME, EMAIL_HOST, EMAIL_HOST_PASSWORD,
-                           EMAIL_HOST_USER, EMAIL_PORT, EMAIL_USE_SSL,
-                           SECRET_KEY)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv()
+env = Env()
+env.read_env(str(BASE_DIR / '.env'))
 
-SECRET_KEY = SECRET_KEY
+SECRET_KEY = env('SECRET_KEY')
 
-DEBUG = DEBUG
-DOMAIN_NAME = DOMAIN_NAME
+DEBUG = env.bool('DEBUG', False)
+# DOMAIN_NAME = DOMAIN_NAME
 
-ALLOWED_HOSTS = ['notes.sushkovs.com', 'notes.sushkovs.ru', '127.0.0.1', '192.168.10.15', '192.168.10.10']
+ALLOWED_HOSTS = env.list('ALLOWED_HOSTS')
 CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
        'http://localhost:8000',
@@ -63,6 +60,7 @@ MIDDLEWARE = [
     'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'django_notes.urls'
@@ -89,11 +87,25 @@ WSGI_APPLICATION = 'django_notes.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
-with open(os.path.join(BASE_DIR, 'db.json'), 'r') as f:
-    db_config = json.load(f)
+# with open(os.path.join(BASE_DIR, 'db.json'), 'r') as f:
+#     db_config = json.load(f)
 
+database_schema = env('POSTGRES_SCHEMA')
 DATABASES = {
-    'default': db_config
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': env('POSTGRES_DB'),
+        'OPTIONS': {'options': f'-c search_path={database_schema}'},
+        'USER': env('POSTGRES_USER'),
+        'PASSWORD': env('POSTGRES_PASSWORD'),
+        'HOST': env('POSTGRES_HOST'),
+        'PORT': env.int('POSTGRES_PORT', 5432),
+        'CONN_MAX_AGE': 300,
+    },
+
+    # Вариант с конфигом
+    # 'default': db_config
+    # Вариант mysql
     # 'default': {
     #     'ENGINE': 'django.db.backends.mysql',
     #     'OPTIONS': {
@@ -197,11 +209,11 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
 #
 # EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-EMAIL_HOST = EMAIL_HOST
-EMAIL_PORT = EMAIL_PORT
-EMAIL_HOST_USER = EMAIL_HOST_USER
-EMAIL_HOST_PASSWORD = EMAIL_HOST_PASSWORD
-EMAIL_USE_SSL = EMAIL_USE_SSL
+EMAIL_HOST = env('EMAIL_HOST')
+EMAIL_PORT = env('EMAIL_PORT')
+EMAIL_HOST_USER = env('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
+EMAIL_USE_SSL = env('EMAIL_USE_SSL')
 
 # ACCOUNT_DEFAULT_HTTP_PROTOCOL = 'https'
 SOCIALACCOUNT_QUERY_EMAIL = True
@@ -214,5 +226,7 @@ INTERNAL_IPS = [
 ]
 
 # Celery
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_BROKER_URL = env('CELERY_BROKER_URL')
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND')
+
+TELEGRAM_FILES = env('TELEGRAM_FILES')

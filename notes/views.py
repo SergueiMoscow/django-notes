@@ -1,4 +1,5 @@
 import logging
+import os
 from datetime import datetime
 
 from bleach import clean
@@ -16,7 +17,11 @@ from notes.Shares import Shares
 
 
 def set_logger():
-    logging.basicConfig(filename=f'{BASE_DIR}/logs/debug.log', level=logging.DEBUG,
+    filename = f'{BASE_DIR}/logs/debug.log'
+    path = os.path.dirname(filename)
+    if not os.path.exists(path):
+        os.makedirs(path)
+    logging.basicConfig(filename=filename, level=logging.DEBUG,
                         format='%(asctime)s %(levelname)s %(name)s %(threadName)s : %(message)s')
 
 
