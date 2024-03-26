@@ -6,8 +6,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8082:8082"
-#    volumes:
+    volumes:
 #      - ./:/app
+      - /storages/django-notes-media/:/app/media
     depends_on:
       - db
       - migrations
