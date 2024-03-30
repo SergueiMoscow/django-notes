@@ -18,7 +18,7 @@ CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
        'http://localhost:8000',
        'http://notes.sushkovs.com',
-       'http://notes.sushkovs.ru',
+       'https://notes.sushkovs.ru',
        'http://192.168.10.10:8000',
 )
 
