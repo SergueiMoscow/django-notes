@@ -12,6 +12,7 @@ services:
     depends_on:
       - db
       - migrations
+    restart: always
 
   db:
     image: postgres:latest
@@ -23,6 +24,7 @@ services:
       - "port=5435"
     env_file:
       - .env
+    restart: always
 
   migrations:
     build:
