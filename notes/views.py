@@ -10,7 +10,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 
 from django_notes.settings import BASE_DIR
 from notes.db_queries import (create_tag, get_list, get_note_by_id,
-                              get_tags_by_note_id, get_tags_by_substring)
+                              get_tags_by_note_id, get_tags_by_substring, replace_urls_with_links)
 from notes.forms import NoteModelForm
 from notes.models import Note, Tag
 from notes.Shares import Shares
@@ -75,7 +75,7 @@ def index(request):
     """
     set_logger()
     logger = logging.getLogger(__name__)
-    logger.debug("vew.index")
+    logger.debug("view.index")
     if request.user.is_authenticated:
         add_shared(request)
     notes = paginate_notes(get_list(request), request.GET.get('page'))
@@ -143,6 +143,7 @@ def show(request, note_id):
     """
     note = get_object_or_404(Note, pk=note_id)
     note.tags = get_tags_by_note_id(note_id=note.id)
+    note.body = replace_urls_with_links(note.body)
     note.body = clean(note.body, tags=['br', 'p', 'hr'])
     note.body = note.body.replace('\n', '<br />')
     return render(request, 'notes/show.html', {'note': note})

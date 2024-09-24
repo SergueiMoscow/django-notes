@@ -31,7 +31,8 @@ def get_list(request):
     for note in notes:
         note.tags = get_tags_by_note_id(note.id)
         note.body = clean(note.body, tags=['br', 'p', 'hr', 'a'])
-        note.body = replace_urls_with_links(note.body[:200].replace('\n', '<br />'))
+        note.body = replace_urls_with_links(note.body[:200])
+        note.body = note.body.replace('\n', '<br />')
         avatar = note.user.userprofile.avatar
         note.avatar = avatar
     return notes
