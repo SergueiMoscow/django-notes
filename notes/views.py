@@ -144,7 +144,7 @@ def show(request, note_id):
     note = get_object_or_404(Note, pk=note_id)
     note.tags = get_tags_by_note_id(note_id=note.id)
     note.body = replace_urls_with_links(note.body)
-    note.body = clean(note.body, tags=['br', 'p', 'hr'])
+    note.body = clean(note.body, tags=['br', 'p', 'hr', 'a'])
     note.body = note.body.replace('\n', '<br />')
     return render(request, 'notes/show.html', {'note': note})
 

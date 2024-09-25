@@ -66,8 +66,7 @@
   </form>
 </div>
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
-    // note_id = {{ note.id }};
+  document._addEventListener("DOMContentLoaded", function () {
     divBody = document.querySelector(".note-body");
     body = divBody.innerHTML;
     urls = getUrlsFromText(body);
@@ -87,7 +86,7 @@
     //   ajax({
     //     method: 'DELETE',
     //     url: `/notes/note/${note_id}/delete`,
-        
+
     //     success: function (data) {
     //         console.log(data);
     //         // window.location='/';

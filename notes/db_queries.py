@@ -68,7 +68,7 @@ def replace_urls_with_links(text):
     # Функция для замены URL на теги <a href...>
     def replace_url(match):
         url = match.group(0)
-        return f'<a href="{url}">{url}</a>'
+        return f'<a href="{url}" target="_blank">{url}</a>'
 
     # Замена URL на теги <a href...>
     replaced_text = re.sub(url_pattern, replace_url, text)
