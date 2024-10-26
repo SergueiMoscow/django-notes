@@ -32,8 +32,8 @@ def get_list(request):
     for note in notes:
         note.tags = get_tags_by_note_id(note.id)
         note.body = clean(note.body, tags=['br', 'p', 'hr', 'a'])
-        note.body = replace_urls_with_links(note.body[:200])
-        note.body = note.body.replace('\n', '<br />')
+        # note.body = note.body.replace('\n', '<br />')
+        note.body = replace_urls_with_links(note.body[:300])
         note.body = markdown.markdown(note.body, extensions=['fenced_code', 'codehilite'])
         avatar = note.user.userprofile.avatar
         note.avatar = avatar
@@ -65,7 +65,9 @@ def create_tag(tag: str, note_id: Note):
 
 def replace_urls_with_links(text):
     # Регулярное выражение для поиска URL
-    url_pattern = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+    # url_pattern = re.compile(r'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\\(\\),]|(?:%[0-9a-fA-F][0-9a-fA-F]))+')
+    # Регулярное выражение для поиска URL БЕЗ markdown
+    url_pattern = re.compile(r'(?<!\]\()(?<!\>)((http[s]?://[^\s\)]+))')
 
     # Функция для замены URL на теги <a href...>
     def replace_url(match):
