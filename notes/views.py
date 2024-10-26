@@ -2,6 +2,7 @@ import logging
 import os
 from datetime import datetime
 
+import markdown
 from bleach import clean
 from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
@@ -146,6 +147,7 @@ def show(request, note_id):
     note.body = replace_urls_with_links(note.body)
     note.body = clean(note.body, tags=['br', 'p', 'hr', 'a'])
     note.body = note.body.replace('\n', '<br />')
+    note.body = markdown.markdown(note.body, extensions=['fenced_code', 'codehilite'])
     return render(request, 'notes/show.html', {'note': note})
 
 

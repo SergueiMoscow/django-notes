@@ -1,5 +1,6 @@
 import re
 
+import markdown
 from bleach import clean
 from django.contrib.auth.models import User
 from django.db.models import Q
@@ -33,6 +34,7 @@ def get_list(request):
         note.body = clean(note.body, tags=['br', 'p', 'hr', 'a'])
         note.body = replace_urls_with_links(note.body[:200])
         note.body = note.body.replace('\n', '<br />')
+        note.body = markdown.markdown(note.body, extensions=['fenced_code', 'codehilite'])
         avatar = note.user.userprofile.avatar
         note.avatar = avatar
     return notes
